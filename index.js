@@ -13,7 +13,7 @@ dbConnect(); // Call dbConnect to establish database connection
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use("/api/User", authRouter);
+app.use("/api/User/", authRouter);
 app.use(notFound);
 app.use(errorHandler);
 app.listen(PORT, () => {
