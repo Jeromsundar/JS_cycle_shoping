@@ -77,14 +77,9 @@ const handleRefreshToken= asyncHandler(async(req,res)=>{
     const cookie= req.cookies;
     if (!cookie?.refreshToken) throw new Error("No refresh Token in cookies");
     const refreshToken = cookie.refreshToken;
-    console.log(refreshToken);
     const user = await User.findOne({refreshToken});
     if(!user) throw new Error ("No Referesh token in db on not matched");
-    jwt.verify
-    (refreshToken, 
-    process.env.JWT_SECRET, 
-    (err,
-    decoded) => {
+    jwt.verify(refreshToken,process.env.JWT_SECRET, (err, decoded) => {
         if(err || user.id !==decoded.id) {
             throw new Error("there is something wrong with refresh token ");
             }
@@ -92,7 +87,7 @@ const handleRefreshToken= asyncHandler(async(req,res)=>{
         res.json({accessToken});
     });
 });
-//logiout funnctionality
+//logout funnctionality
 const logout = asyncHandler(async (req, res) => {
     const cookies = req.cookies;
     if (!cookies?.refreshToken) throw new Error("No refresh token in cookies");
@@ -100,7 +95,7 @@ const logout = asyncHandler(async (req, res) => {
     const refreshToken = cookies.refreshToken;
     const user = await User.findOne({ refreshToken });
 
-    if (!user) {
+    if(!user) {
         res.clearCookie("refreshToken", {
             httpOnly: true,
             secure: true,
@@ -108,14 +103,13 @@ const logout = asyncHandler(async (req, res) => {
         return res.sendStatus(204); // No Content
     }
 
-    await User.findOneAndUpdate({ refreshToken }, { refreshToken: "" });
+    await User.findOneAndUpdate({ refreshToken }, { refreshToken: "" ,});
 
     res.clearCookie("refreshToken", {
         httpOnly: true,
         secure: true,
     });
-
-    res.sendStatus(204); // No Content
+    return res.sendStatus(204); // No Content
 });
 
 //update a user
@@ -143,8 +137,9 @@ res.json(updatedUser);
 
 // delete a single user
 const deleteaUser = asyncHandler(async(req,res)=>{
-    console.log(req.params);
+    
     const {id}=req.params;
+    validateMongoDbId(id);
     
     try {
         const deleteaUser=await User.findByIdAndDelete(id);

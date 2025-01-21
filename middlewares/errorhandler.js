@@ -6,7 +6,7 @@ const notFound= (req, res,next) =>{
     next(error);
 };
 
-//error hamdler
+//error handler
 const errorHandler = (err, res, next) => {
     const statuscode = res.statuscode ==200 ? 500 : res.statusCode;
     res.jason ({ 
